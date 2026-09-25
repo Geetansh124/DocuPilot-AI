@@ -14,7 +14,7 @@ services:
       - key: AWS_DYNAMODB_TABLE
         value: docupilot-documents
       - key: FRONTEND_ORIGIN
-        value: https://frontend-5l3vkwrof-operapoint86-1507s-projects.vercel.app
+        value: "https://frontend-5l3vkwrof-operapoint86-1507s-projects.vercel.app,https://frontend-boucxo35a-operapoint86-1507s-projects.vercel.app"
       - key: NVIDIA_API_KEY
         sync: false
       - key: ALPHAVANTAGE_API_KEY
