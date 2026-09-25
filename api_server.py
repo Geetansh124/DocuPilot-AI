@@ -12,11 +12,13 @@ from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langraph_rag_backend import chatbot, ingest_pdf, retrieve_all_threads, thread_document_metadata
 
 app = FastAPI(title="DocuPilot AI API", version="1.0.0")
+origins = [o.strip() for o in os.getenv("FRONTEND_ORIGIN", "http://localhost:3000,http://localhost:3001").split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("FRONTEND_ORIGIN", "http://localhost:3000,http://localhost:3001").split(","),
+    allow_origins=origins,
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
