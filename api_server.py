@@ -80,12 +80,14 @@ def chat(request: ChatRequest) -> ChatResponse:
 
 @app.post("/api/threads/{thread_id}/document")
 async def upload_document(thread_id: str, file: UploadFile = File(...)) -> dict[str, Any]:
-    if file.content_type != "application/pdf":
+    filename = file.filename or "document.pdf"
+    is_pdf = filename.lower().endswith(".pdf") or (file.content_type in ["application/pdf", "application/x-pdf", "application/octet-stream", "binary/octet-stream"])
+    if not is_pdf:
         raise HTTPException(status_code=415, detail="Only PDF files are supported.")
-    data=await file.read()
+    data = await file.read()
     if len(data) > 200 * 1024 * 1024:
         raise HTTPException(status_code=413, detail="PDF exceeds the 200MB limit.")
     try:
-        return ingest_pdf(data, thread_id=thread_id, filename=file.filename)
-    except (ValueError, RuntimeError) as exc:
-        raise HTTPException(status_code=422, detail=str(exc)) from exc
+        return ingest_pdf(data, thread_id=thread_id, filename=filename)
+    except Exception as exc:
+        raise HTTPException(status_code=422, detail=f"Failed to process PDF: {exc}") from exc

@@ -94,6 +94,7 @@ def ingest_pdf(file_bytes: bytes, thread_id: str, filename: Optional[str] = None
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
         temp_file.write(file_bytes)
+        temp_file.flush()
         temp_path = temp_file.name
 
     try:

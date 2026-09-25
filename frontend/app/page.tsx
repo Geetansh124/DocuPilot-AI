@@ -159,19 +159,42 @@ export default function Home() {
   }
 
   async function upload(file?: File) {
-    if (!file || file.type !== "application/pdf") return;
+    if (!file) return;
+    const isPdf = file.name.toLowerCase().endsWith(".pdf") || file.type === "application/pdf" || file.type.includes("pdf");
+    if (!isPdf) {
+      setMessages(current => [
+        ...current,
+        { role: "assistant", content: "Please upload a valid PDF file (.pdf)." },
+      ]);
+      return;
+    }
+
+    let activeThreadId = threadId;
+    if (!activeThreadId) {
+      activeThreadId = crypto.randomUUID();
+      setThreadId(activeThreadId);
+    }
+
     setUploading(true);
     try {
       const body = new FormData();
-      body.append("file", file);
-      const response = await fetch(`${API}/api/threads/${threadId}/document`, { method: "POST", body });
+      body.append("file", file, file.name);
+      const response = await fetch(`${API}/api/threads/${activeThreadId}/document`, { method: "POST", body });
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Upload failed");
       setDocument(data);
-    } catch (error) {
       setMessages(current => [
         ...current,
-        { role: "assistant", content: error instanceof Error ? error.message : "Upload failed." },
+        {
+          role: "assistant",
+          content: `📄 **${data.filename || file.name}** has been indexed successfully (${data.chunks || 0} chunks, ${data.documents || 1} pages).\n\nYou can now ask questions about this document!`,
+        },
+      ]);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "Upload failed.";
+      setMessages(current => [
+        ...current,
+        { role: "assistant", content: `Upload error: ${msg}` },
       ]);
     } finally {
       setUploading(false);
@@ -204,9 +227,10 @@ export default function Home() {
           <div className="mt-8 text-[11px] font-bold uppercase tracking-[.18em] text-slate-500">Knowledge source</div>
           <button
             onClick={() => fileRef.current?.click()}
-            className="mt-3 flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-violet-400/60 bg-violet-400/10 px-4 py-6 text-sm text-slate-300 transition hover:bg-violet-400/20"
+            disabled={uploading}
+            className="mt-3 flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-violet-400/60 bg-violet-400/10 px-4 py-6 text-sm text-slate-300 transition hover:bg-violet-400/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Upload size={20} className="text-violet-300" />
+            <Upload size={20} className={`text-violet-300 ${uploading ? "animate-pulse" : ""}`} />
             {uploading ? "Indexing PDF…" : document ? `${document.filename}` : "Upload a PDF"}
             <span className="text-xs text-slate-500">PDF up to 200MB</span>
           </button>
@@ -214,8 +238,12 @@ export default function Home() {
             ref={fileRef}
             className="hidden"
             type="file"
-            accept="application/pdf"
-            onChange={event => void upload(event.target.files?.[0])}
+            accept=".pdf,application/pdf"
+            onChange={event => {
+              const selected = event.target.files?.[0];
+              if (selected) void upload(selected);
+              event.target.value = "";
+            }}
           />
 
           {document && (
