@@ -225,10 +225,21 @@ tools = [rag_tool, search_tool, get_stock_price, calculator]
 
 def _route_with_ruflo(task: str) -> dict:
     """Route a request through the project-local Ruflo MCP tool."""
-    node_bin = os.path.expanduser("~/.local/node-v20.20.2/current/bin")
-    env = {**os.environ, "PATH": f"{node_bin}:{os.environ.get('PATH', '')}"}
+    import shutil
+    extra_paths = [
+        os.path.dirname(shutil.which("node") or ""),
+        os.path.expanduser("~/.local/node-v20.20.2/current/bin"),
+        "/usr/local/bin",
+        "/usr/bin"
+    ]
+    current_path = os.environ.get("PATH", "")
+    path_dirs = [p for p in extra_paths if p and os.path.isdir(p)] + [current_path]
+    full_path = ":".join(dict.fromkeys(path_dirs))
+    env = {**os.environ, "PATH": full_path}
+
+    npx_bin = shutil.which("npx", path=full_path) or "npx"
     command = [
-        "npx",
+        npx_bin,
         "--yes",
         "ruflo",
         "mcp",
