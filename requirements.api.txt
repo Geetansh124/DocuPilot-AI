@@ -1,5 +1,6 @@
 python-dotenv
 requests
+numpy==1.26.4
 langchain-community
 langchain-core
 langchain-huggingface
@@ -11,6 +12,7 @@ faiss-cpu
 pypdf
 sentence-transformers
 duckduckgo-search
+ddgs
 fastapi
 uvicorn[standard]
 python-multipart
