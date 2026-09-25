@@ -295,8 +295,13 @@ export default function Home() {
 
           <div className="flex-1 space-y-6">
             {messages.length === 0 && (
-              <div className="grid gap-3 sm:grid-cols-3">
-                {["Summarize my PDF", "What can you help with?", "Calculate 125 × 8"].map(prompt => (
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  "Summarize my PDF",
+                  "Search web for latest tech news",
+                  "Run Python to calculate compound interest",
+                  "What tools can you use?",
+                ].map(prompt => (
                   <button
                     key={prompt}
                     onClick={() => setInput(prompt)}

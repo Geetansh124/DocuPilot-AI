@@ -18,6 +18,7 @@ from langchain_core.messages import BaseMessage, SystemMessage
 from langchain_core.tools import tool
 
 from aws_storage import storage
+from agent_tools import analyze_tabular_data, fetch_web_url, get_current_datetime, python_interpreter
 
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import START, StateGraph
@@ -221,7 +222,16 @@ def rag_tool(query: str, thread_id: Optional[str] = None) -> dict:
     }
 
 
-tools = [rag_tool, search_tool, get_stock_price, calculator]
+tools = [
+    rag_tool,
+    search_tool,
+    fetch_web_url,
+    python_interpreter,
+    get_current_datetime,
+    analyze_tabular_data,
+    get_stock_price,
+    calculator,
+]
 
 
 def _route_with_ruflo(task: str) -> dict:
@@ -376,8 +386,8 @@ def chat_node(state: ChatState, config=None):
             + "\nUse this routing result to choose the most suitable response approach. "
             + "For document questions, call `rag_tool` with the `thread_id` "
             f"`{thread_id}` and use its context as the primary source of truth. "
-            "You may use the web search, stock price, and calculator tools only when the user "
-            "explicitly asks for them or they are necessary for a non-document question."
+            "You may use web search, URL fetching, Python code execution, datetime lookup, "
+            "tabular data analysis, stock price, and calculator tools whenever relevant to give the best answer."
         )
     )
 

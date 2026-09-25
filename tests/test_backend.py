@@ -57,6 +57,30 @@ class TestBackend(unittest.TestCase):
         self.assertIn("perf_test_2", threads)
         self.assertEqual(len(threads), len(set(threads)))
 
+    def test_agent_python_interpreter(self):
+        from agent_tools import python_interpreter
+        res = python_interpreter.invoke({"code": "x = 10 * 5\nprint('Computed:', x)"})
+        self.assertTrue(res["success"])
+        self.assertIn("Computed: 50", res["stdout"])
+        self.assertEqual(res["variables"].get("x"), "50")
+
+    def test_agent_get_current_datetime(self):
+        from agent_tools import get_current_datetime
+        res = get_current_datetime.invoke({})
+        self.assertIn("utc_iso", res)
+        self.assertIn("year", res)
+        self.assertGreaterEqual(res["year"], 2026)
+
+    def test_agent_analyze_tabular_data(self):
+        from agent_tools import analyze_tabular_data
+        csv_data = "name,score\nAlice,95\nBob,85\nCharlie,90"
+        res = analyze_tabular_data.invoke({"data": csv_data})
+        self.assertEqual(res["total_rows"], 3)
+        self.assertEqual(res["total_columns"], 2)
+        self.assertIn("score", res["summary"])
+        self.assertEqual(res["summary"]["score"]["max"], 95.0)
+
 
 if __name__ == "__main__":
     unittest.main()
+
