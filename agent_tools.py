@@ -215,3 +215,44 @@ def analyze_tabular_data(data: str) -> dict[str, Any]:
         "columns": columns,
         "summary": stats,
     }
+
+
+@tool
+def wikipedia_search(query: str) -> dict[str, Any]:
+    """Search Wikipedia for encyclopedic facts, summaries, concepts, people, and historical records.
+    
+    Returns structured summaries, page URLs, and snippets from Wikipedia.
+    """
+    clean_query = query.strip()
+    if not clean_query:
+        return {"error": "Query cannot be empty"}
+    try:
+        headers = {"User-Agent": "DocuPilotAI-Bot/1.0 (https://docupilot-api.onrender.com)"}
+        search_url = "https://en.wikipedia.org/w/api.php"
+        params = {
+            "action": "query",
+            "list": "search",
+            "srsearch": clean_query,
+            "format": "json",
+            "srlimit": 3,
+        }
+        res = requests.get(search_url, params=params, headers=headers, timeout=10)
+        res.raise_for_status()
+        data = res.json()
+        search_results = data.get("query", {}).get("search", [])
+        if not search_results:
+            return {"query": clean_query, "results": [], "message": "No Wikipedia articles found."}
+        
+        articles = []
+        for item in search_results:
+            title = item.get("title", "")
+            snippet = re.sub(r"<[^>]+>", "", item.get("snippet", ""))
+            articles.append({
+                "title": title,
+                "snippet": snippet,
+                "url": f"https://en.wikipedia.org/wiki/{title.replace(' ', '_')}",
+            })
+        return {"query": clean_query, "results": articles}
+    except Exception as exc:
+        return {"error": f"Wikipedia search failed: {exc}", "query": clean_query}
+

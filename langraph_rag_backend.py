@@ -18,7 +18,13 @@ from langchain_core.messages import BaseMessage, SystemMessage
 from langchain_core.tools import tool
 
 from aws_storage import storage
-from agent_tools import analyze_tabular_data, fetch_web_url, get_current_datetime, python_interpreter
+from agent_tools import (
+    analyze_tabular_data,
+    fetch_web_url,
+    get_current_datetime,
+    python_interpreter,
+    wikipedia_search,
+)
 
 from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import START, StateGraph
@@ -93,42 +99,50 @@ def ingest_pdf(file_bytes: bytes, thread_id: str, filename: Optional[str] = None
     if not file_bytes:
         raise ValueError("No bytes received for ingestion.")
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-        temp_file.write(file_bytes)
-        temp_file.flush()
-        temp_path = temp_file.name
-
-    try:
-        loader = PyPDFLoader(temp_path)
-        docs = loader.load()
-
-        splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000, chunk_overlap=200, separators=["\n\n", "\n", " ", ""]
-        )
-        chunks = splitter.split_documents(docs)
-
-        vector_store = FAISS.from_documents(chunks, get_embeddings())
-        retriever = vector_store.as_retriever(
-            search_type="mmr", search_kwargs={"k": 5, "fetch_k": 15, "lambda_mult": 0.7}
-        )
-
-        metadata = {
-            "filename": filename or os.path.basename(temp_path),
-            "documents": len(docs),
-            "chunks": len(chunks),
-        }
-        _THREAD_RETRIEVERS[str(thread_id)] = retriever
-        _THREAD_METADATA[str(thread_id)] = metadata
-        storage.save_document(
-            str(thread_id), metadata["filename"], file_bytes, vector_store, metadata
-        )
-        return metadata
-    finally:
-        # The FAISS store keeps copies of the text, so the temp file is safe to remove.
+    ext = (filename or "").lower()
+    docs = []
+    if ext.endswith(".pdf") or not ext:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+            temp_file.write(file_bytes)
+            temp_file.flush()
+            temp_path = temp_file.name
         try:
-            os.remove(temp_path)
-        except OSError:
-            pass
+            loader = PyPDFLoader(temp_path)
+            docs = loader.load()
+        finally:
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass
+    else:
+        from langchain_core.documents import Document
+        raw_text = file_bytes.decode("utf-8", errors="replace")
+        docs = [Document(page_content=raw_text, metadata={"source": filename or "document"})]
+
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000, chunk_overlap=200, separators=["\n\n", "\n", " ", ""]
+    )
+    chunks = splitter.split_documents(docs) if docs else []
+    if not chunks:
+        from langchain_core.documents import Document
+        chunks = [Document(page_content="[Empty document content]", metadata={"source": filename or "document"})]
+
+    vector_store = FAISS.from_documents(chunks, get_embeddings())
+    retriever = vector_store.as_retriever(
+        search_type="mmr", search_kwargs={"k": 5, "fetch_k": 15, "lambda_mult": 0.7}
+    )
+
+    metadata = {
+        "filename": filename or "document",
+        "documents": len(docs) or 1,
+        "chunks": len(chunks),
+    }
+    _THREAD_RETRIEVERS[str(thread_id)] = retriever
+    _THREAD_METADATA[str(thread_id)] = metadata
+    storage.save_document(
+        str(thread_id), metadata["filename"], file_bytes, vector_store, metadata
+    )
+    return metadata
 
 
 # -------------------
@@ -226,6 +240,7 @@ tools = [
     rag_tool,
     search_tool,
     fetch_web_url,
+    wikipedia_search,
     python_interpreter,
     get_current_datetime,
     analyze_tabular_data,

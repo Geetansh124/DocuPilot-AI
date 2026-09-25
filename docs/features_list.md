@@ -2,36 +2,36 @@
 
 ## 1. Core Chatbot Features
 
-- [ ] LLM conversation
-- [ ] System prompts
-- [ ] Context management
-- [ ] Conversation history
-- [ ] Streaming responses
-- [ ] Structured JSON output
-- [ ] Function/tool calling
+- [x] LLM conversation
+- [x] System prompts
+- [x] Context management
+- [x] Conversation history
+- [x] Streaming responses
+- [x] Structured JSON output (JSON Chat Export & API responses)
+- [x] Function/tool calling
 - [ ] Multimodal input
 - [ ] Multimodal output
-- [ ] Error handling
-- [ ] Response regeneration
-- [ ] Conversation branching
-- [ ] Session management
+- [x] Error handling
+- [x] Response regeneration
+- [x] Conversation branching
+- [x] Session management
 
 ## 2. Web & Internet
 
-- [ ] Web search
-- [ ] News search
-- [ ] Academic search
-- [ ] URL fetching
+- [x] Web search (DuckDuckGo Search)
+- [x] News search
+- [x] Academic search (Wikipedia encyclopedia & academic search)
+- [x] URL fetching (fetch_web_url)
 - [ ] Web crawling
-- [ ] Web scraping
+- [x] Web scraping (HTML clean text extraction)
 - [ ] Browser automation
 - [ ] Website navigation
 - [ ] Click/type/form automation
 - [ ] File download
 - [ ] File upload
 - [ ] Website monitoring
-- [ ] Search result extraction
-- [ ] Source citation
+- [x] Search result extraction
+- [x] Source citation
 - [ ] Source verification
 - [ ] Cross-source comparison
 
@@ -41,21 +41,21 @@
 
 ## 3. Agent Planning & Reasoning
 
-- [ ] Goal interpretation
-- [ ] Task decomposition
-- [ ] Multi-step planning
-- [ ] Dynamic replanning
-- [ ] Reasoning loop
+- [x] Goal interpretation
+- [x] Task decomposition
+- [x] Multi-step planning
+- [x] Dynamic replanning
+- [x] Reasoning loop (LangGraph agent loop)
 - [ ] Reflection
 - [ ] Self-critique
 - [ ] Self-evaluation
-- [ ] Decision making
-- [ ] State management
+- [x] Decision making
+- [x] State management (LangGraph checkpointer)
 - [ ] Task prioritization
 - [ ] Dependency management
-- [ ] Failure recovery
+- [x] Failure recovery
 - [ ] Retry strategies
-- [ ] Goal completion detection
+- [x] Goal completion detection
 
 ## 4. Computer Use
 
@@ -66,7 +66,7 @@
 - [ ] Screenshot capture
 - [ ] Window interaction
 - [ ] Clipboard interaction
-- [ ] File-system interaction
+- [x] File-system interaction (Document ingestion)
 - [ ] Terminal interaction
 - [ ] Remote computer interaction
 
@@ -76,10 +76,10 @@
 - [ ] Search repository & symbols
 - [ ] Understand project structure
 - [ ] Create, edit, delete, and rename files
-- [ ] Run code & run tests
+- [x] Run code & run tests (python_interpreter)
 - [ ] Run linters & formatters
 - [ ] Compile/build project
-- [ ] Debug errors & analyze stack traces
+- [x] Debug errors & analyze stack traces
 - [ ] Install dependencies & manage environments
 - [ ] Git operations (commits, branches, pull requests, reviews)
 - [ ] CI/CD integration
@@ -89,33 +89,33 @@
 
 ## 6. File & Document Processing
 
-- [ ] PDF reading & generation
+- [x] PDF reading & generation (PyPDFLoader & multi-format parser)
 - [ ] DOCX reading & generation
 - [ ] XLSX reading & generation
 - [ ] PPTX reading & generation
-- [ ] CSV & TXT processing
-- [ ] Markdown processing
+- [x] CSV & TXT processing (Tabular CSV & raw text loader)
+- [x] Markdown processing (MD document parser & MD chat exporter)
 - [ ] OCR & table extraction
-- [ ] Document parsing, classification, summarization, and comparison
-- [ ] Metadata extraction & file conversion
+- [x] Document parsing, classification, summarization, and comparison
+- [x] Metadata extraction & file conversion
 
 ## 7. RAG / Knowledge Retrieval
 
-- [ ] Document ingestion & chunking
-- [ ] Embedding generation
-- [ ] Vector search, keyword search, and hybrid search
-- [ ] Metadata filtering & semantic retrieval
-- [ ] Reranking & context compression
-- [ ] Citation generation & source attribution
-- [ ] Knowledge-base updates & retrieval evaluation
+- [x] Document ingestion & chunking
+- [x] Embedding generation (HuggingFaceEmbeddings)
+- [x] Vector search, keyword search, and hybrid search (FAISS + MMR)
+- [x] Metadata filtering & semantic retrieval
+- [x] Reranking & context compression
+- [x] Citation generation & source attribution
+- [x] Knowledge-base updates & retrieval evaluation
 
 ### Vector / Retrieval Technologies
 - FAISS, Qdrant, Pinecone, Weaviate, Milvus, Chroma, Elasticsearch / OpenSearch
 
 ## 8. Memory
 
-- [ ] Short-term memory & conversation memory
-- [ ] Working memory & long-term memory
+- [x] Short-term memory & conversation memory
+- [x] Working memory & long-term memory (SqliteSaver thread checkpointer)
 - [ ] Semantic memory, episodic memory, and procedural memory
 - [ ] User preferences & task/decision history
 - [ ] Memory retrieval, update, summarization, expiration, and privacy controls
@@ -172,10 +172,10 @@
 
 ## 14. Data Analysis
 
-- [ ] CSV & Excel analysis
-- [ ] SQL analysis & statistical analysis
-- [ ] Data cleaning, transformation, aggregation, and visualization
-- [ ] Report generation, anomaly detection, forecasting, and machine-learning analysis
+- [x] CSV & Excel analysis (analyze_tabular_data)
+- [x] SQL analysis & statistical analysis (python_interpreter sandbox)
+- [x] Data cleaning, transformation, aggregation, and visualization
+- [x] Report generation, anomaly detection, forecasting, and machine-learning analysis
 - **Technologies**: Python, pandas, NumPy, Polars, DuckDB, SciPy, scikit-learn, Matplotlib, Plotly, Jupyter
 
 ## 15. AI / ML Engineering
@@ -188,10 +188,10 @@
 
 ## 16. Research Agent
 
-- [ ] Web, academic, and news research
-- [ ] Source discovery, extraction, and deduplication
-- [ ] Evidence collection, comparison, and claim verification
-- [ ] Citation generation, research synthesis, and research report generation
+- [x] Web, academic, and news research (DuckDuckGo Search & Wikipedia)
+- [x] Source discovery, extraction, and deduplication
+- [x] Evidence collection, comparison, and claim verification
+- [x] Citation generation, research synthesis, and research report generation
 - **Sources**: Google Scholar, arXiv, PubMed, Semantic Scholar, Crossref, Government datasets, Company documentation
 
 ## 17. Knowledge Graph

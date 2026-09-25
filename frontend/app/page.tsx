@@ -1,9 +1,31 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { FileText, Plus, Send, Sparkles, Upload, Menu, X, Bot, User } from "lucide-react";
+import {
+  FileText,
+  Plus,
+  Send,
+  Sparkles,
+  Upload,
+  Menu,
+  X,
+  Bot,
+  User,
+  Copy,
+  Check,
+  RotateCcw,
+  Trash2,
+  Download,
+} from "lucide-react";
+import { exportChatAsJSON, exportChatAsMarkdown } from "./exportUtils";
+import { TOOL_CONFIG } from "./toolConfig";
 
-type Message = { role: "user" | "assistant"; content: string };
+type Message = {
+  role: "user" | "assistant";
+  content: string;
+  tools_used?: string[];
+};
+
 type Thread = { id: string; title: string; messages: Message[] };
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -17,6 +39,7 @@ export default function Home() {
   const [isTyping, setIsTyping] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -59,18 +82,20 @@ export default function Home() {
     setMessages(thread.messages);
   }
 
-  function streamOneByOne(fullText: string, currentThreadId: string, promptText: string) {
+  function copyText(text: string, idx: number) {
+    void navigator.clipboard.writeText(text);
+    setCopiedIndex(idx);
+    setTimeout(() => setCopiedIndex(null), 2000);
+  }
+
+  function streamOneByOne(fullText: string, currentThreadId: string, promptText: string, toolsUsed: string[] = []) {
     if (typingTimerRef.current) clearInterval(typingTimerRef.current);
     setIsTyping(true);
 
-    // Split preserving spaces and newlines
     const tokens = fullText.split(/(\s+)/);
     let index = 0;
 
-    // Create the empty assistant message bubble to fill one by one
-    setMessages(current => [...current, { role: "assistant", content: "" }]);
-
-    // Dynamic typing speed: between 12ms and 24ms per token
+    setMessages(current => [...current, { role: "assistant", content: "", tools_used: toolsUsed }]);
     const speed = Math.max(12, Math.min(24, Math.floor(1600 / Math.max(tokens.length, 1))));
 
     typingTimerRef.current = setInterval(() => {
@@ -83,7 +108,7 @@ export default function Home() {
         setMessages(current => {
           const next = [...current];
           if (next.length > 0 && next[next.length - 1].role === "assistant") {
-            next[next.length - 1] = { role: "assistant", content: fullText };
+            next[next.length - 1] = { role: "assistant", content: fullText, tools_used: toolsUsed };
           }
           return next;
         });
@@ -96,7 +121,7 @@ export default function Home() {
         setMessages(current => {
           const next = [...current];
           if (next.length > 0 && next[next.length - 1].role === "assistant") {
-            next[next.length - 1] = { role: "assistant", content: partial };
+            next[next.length - 1] = { role: "assistant", content: partial, tools_used: toolsUsed };
           }
           return next;
         });
@@ -104,15 +129,14 @@ export default function Home() {
     }, speed);
   }
 
-  async function send(event: FormEvent) {
-    event.preventDefault();
-    const text = input.trim();
-    if (!text || busy || isTyping) return;
+  async function executeChat(text: string) {
+    let activeThreadId = threadId;
+    if (!activeThreadId) {
+      activeThreadId = crypto.randomUUID();
+      setThreadId(activeThreadId);
+    }
 
-    setInput("");
-    setMessages(current => [...current, { role: "user", content: text }]);
     setBusy(true);
-
     const doFetch = async () => {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 120000);
@@ -120,7 +144,7 @@ export default function Home() {
         const response = await fetch(`${API}/api/chat`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: text, thread_id: threadId }),
+          body: JSON.stringify({ message: text, thread_id: activeThreadId }),
           signal: controller.signal,
         });
         clearTimeout(timer);
@@ -144,27 +168,49 @@ export default function Home() {
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.detail || "Request failed");
-
-      // Stream the answer one by one with typewriter animation
-      streamOneByOne(data.message, threadId, text);
+      streamOneByOne(data.message, activeThreadId, text, data.tools_used || []);
     } catch (error) {
       setBusy(false);
       setIsTyping(false);
       const msg = error instanceof Error ? error.message : "Something went wrong.";
       const errorContent = msg.includes("Failed to fetch")
-        ? "Could not reach the server — it may be waking up (free tier). Please wait 30 seconds and try again."
+        ? "Could not reach server (free tier waking up). Please try again in 30 seconds."
         : msg;
       setMessages(current => [...current, { role: "assistant", content: errorContent }]);
     }
   }
 
+  async function send(event: FormEvent) {
+    event.preventDefault();
+    const text = input.trim();
+    if (!text || busy || isTyping) return;
+    setInput("");
+    setMessages(current => [...current, { role: "user", content: text }]);
+    await executeChat(text);
+  }
+
+  function regenerate() {
+    if (busy || isTyping) return;
+    const userPrompts = messages.filter(m => m.role === "user");
+    if (!userPrompts.length) return;
+    const lastPrompt = userPrompts[userPrompts.length - 1].content;
+    setMessages(current => {
+      if (current.length && current[current.length - 1].role === "assistant") {
+        return current.slice(0, -1);
+      }
+      return current;
+    });
+    void executeChat(lastPrompt);
+  }
+
   async function upload(file?: File) {
     if (!file) return;
-    const isPdf = file.name.toLowerCase().endsWith(".pdf") || file.type === "application/pdf" || file.type.includes("pdf");
-    if (!isPdf) {
+    const validExts = [".pdf", ".txt", ".md", ".csv", ".json", ".log"];
+    const ext = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+    if (!validExts.includes(ext) && !file.type.includes("pdf") && !file.type.includes("text")) {
       setMessages(current => [
         ...current,
-        { role: "assistant", content: "Please upload a valid PDF file (.pdf)." },
+        { role: "assistant", content: `Please select a supported document (${validExts.join(", ")}).` },
       ]);
       return;
     }
@@ -187,15 +233,12 @@ export default function Home() {
         ...current,
         {
           role: "assistant",
-          content: `📄 **${data.filename || file.name}** has been indexed successfully (${data.chunks || 0} chunks, ${data.documents || 1} pages).\n\nYou can now ask questions about this document!`,
+          content: `📄 **${data.filename || file.name}** indexed successfully (${data.chunks || 0} chunks, ${data.documents || 1} parts).\n\nYou can now ask questions about this document!`,
         },
       ]);
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Upload failed.";
-      setMessages(current => [
-        ...current,
-        { role: "assistant", content: `Upload error: ${msg}` },
-      ]);
+      setMessages(current => [...current, { role: "assistant", content: `Upload error: ${msg}` }]);
     } finally {
       setUploading(false);
     }
@@ -210,7 +253,7 @@ export default function Home() {
               <div className="text-xl font-bold tracking-tight">
                 DocuPilot <span className="text-violet-400">AI</span>
               </div>
-              <p className="mt-1 text-xs text-slate-400">Your intelligent document workspace</p>
+              <p className="mt-1 text-xs text-slate-400">Intelligent agent & document workspace</p>
             </div>
             <button className="md:hidden" onClick={() => setSidebarOpen(false)}>
               <X size={18} />
@@ -228,17 +271,17 @@ export default function Home() {
           <button
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            className="mt-3 flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-violet-400/60 bg-violet-400/10 px-4 py-6 text-sm text-slate-300 transition hover:bg-violet-400/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-3 flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-violet-400/60 bg-violet-400/10 px-4 py-5 text-sm text-slate-300 transition hover:bg-violet-400/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Upload size={20} className={`text-violet-300 ${uploading ? "animate-pulse" : ""}`} />
-            {uploading ? "Indexing PDF…" : document ? `${document.filename}` : "Upload a PDF"}
-            <span className="text-xs text-slate-500">PDF up to 200MB</span>
+            <span className="truncate max-w-[240px] font-medium">{uploading ? "Indexing…" : document ? `${document.filename}` : "Upload Document"}</span>
+            <span className="text-[11px] text-slate-500">PDF, TXT, MD, CSV, JSON</span>
           </button>
           <input
             ref={fileRef}
             className="hidden"
             type="file"
-            accept=".pdf,application/pdf"
+            accept=".pdf,.txt,.md,.csv,.json,.log"
             onChange={event => {
               const selected = event.target.files?.[0];
               if (selected) void upload(selected);
@@ -248,7 +291,7 @@ export default function Home() {
 
           {document && (
             <div className="mt-3 rounded-lg bg-emerald-400/10 p-3 text-xs text-emerald-300">
-              <FileText size={14} className="mb-1" /> {String(document.chunks)} chunks · {String(document.documents)} pages
+              <FileText size={14} className="mb-1" /> {String(document.chunks)} chunks · {String(document.documents)} sections
             </div>
           )}
 
@@ -259,7 +302,7 @@ export default function Home() {
                 key={thread.id}
                 onClick={() => selectThread(thread)}
                 className={`w-full truncate rounded-lg px-3 py-2.5 text-left text-sm transition ${
-                  thread.id === threadId ? "bg-violet-400/15 text-violet-200" : "text-slate-400 hover:bg-white/5 hover:text-white"
+                  thread.id === threadId ? "bg-violet-400/15 text-violet-200 font-medium" : "text-slate-400 hover:bg-white/5 hover:text-white"
                 }`}
               >
                 {thread.title || "New chat"}
@@ -271,12 +314,40 @@ export default function Home() {
 
       <section className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center justify-between border-b border-white/10 px-6 py-4">
-          <button className="md:hidden" onClick={() => setSidebarOpen(true)}>
-            <Menu size={20} />
-          </button>
-          <div className="hidden md:block" />
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" /> Ready
+          <div className="flex items-center gap-3">
+            <button className="md:hidden" onClick={() => setSidebarOpen(true)}>
+              <Menu size={20} />
+            </button>
+            <div className="hidden md:flex items-center gap-2 text-xs text-slate-400">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" /> Model: Nemotron-3 550B
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {messages.length > 0 && (
+              <>
+                <button
+                  onClick={() => exportChatAsMarkdown(threads.find(t => t.id === threadId)?.title || "chat", messages)}
+                  title="Export Markdown"
+                  className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-slate-300 transition hover:border-violet-400/50 hover:bg-violet-400/10 hover:text-violet-200"
+                >
+                  <Download size={13} /> Export MD
+                </button>
+                <button
+                  onClick={() => exportChatAsJSON(threads.find(t => t.id === threadId)?.title || "chat", messages)}
+                  title="Export JSON"
+                  className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-slate-300 transition hover:border-violet-400/50 hover:bg-violet-400/10 hover:text-violet-200"
+                >
+                  <Download size={13} /> JSON
+                </button>
+              </>
+            )}
+            <button
+              onClick={() => newChat()}
+              title="Clear Chat"
+              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs text-slate-400 transition hover:border-red-400/50 hover:bg-red-400/10 hover:text-red-300"
+            >
+              <Trash2 size={13} /> Clear
+            </button>
           </div>
         </header>
 
@@ -288,7 +359,7 @@ export default function Home() {
               </div>
               <div>
                 <h1 className="text-4xl font-bold tracking-tight">What would you like to explore?</h1>
-                <p className="mt-2 text-slate-400">Ask questions, analyze documents, or use your AI tools.</p>
+                <p className="mt-2 text-slate-400">Ask questions, analyze documents, run Python code, or use agent tools.</p>
               </div>
             </div>
           </div>
@@ -297,7 +368,7 @@ export default function Home() {
             {messages.length === 0 && (
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {[
-                  "Summarize my PDF",
+                  "Summarize my document",
                   "Search web for latest tech news",
                   "Run Python to calculate compound interest",
                   "What tools can you use?",
@@ -316,9 +387,23 @@ export default function Home() {
             {messages.map((message, index) => {
               const isLastAssistant = message.role === "assistant" && index === messages.length - 1;
               return (
-                <div key={index} className={`flex gap-3 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div key={index} className={`flex flex-col gap-2 ${message.role === "user" ? "items-end" : "items-start"}`}>
+                  {message.tools_used && message.tools_used.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 ml-1">
+                      {message.tools_used.map(toolKey => {
+                        const cfg = TOOL_CONFIG[toolKey] || { label: toolKey, icon: Bot, style: "text-slate-300 border-white/10 bg-white/5" };
+                        const Icon = cfg.icon;
+                        return (
+                          <span key={toolKey} className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium border ${cfg.style}`}>
+                            <Icon size={11} /> {cfg.label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
+
                   <div
-                    className={`flex max-w-[80%] gap-3 rounded-2xl px-4 py-3 ${
+                    className={`group relative flex max-w-[85%] gap-3 rounded-2xl px-4 py-3 ${
                       message.role === "user"
                         ? "bg-violet-500 text-white"
                         : "border border-white/10 bg-white/[.04] text-slate-200"
@@ -329,10 +414,34 @@ export default function Home() {
                     ) : (
                       <User size={17} className="mt-1 shrink-0" />
                     )}
-                    <div className="whitespace-pre-wrap text-sm leading-6">
-                      {message.content}
-                      {isLastAssistant && isTyping && (
-                        <span className="inline-block h-4 w-2 ml-1 rounded-sm bg-violet-400 animate-pulse align-middle" />
+
+                    <div className="min-w-0 flex-1">
+                      <div className="whitespace-pre-wrap text-sm leading-6">
+                        {message.content}
+                        {isLastAssistant && isTyping && (
+                          <span className="inline-block h-4 w-2 ml-1 rounded-sm bg-violet-400 animate-pulse align-middle" />
+                        )}
+                      </div>
+
+                      {message.role === "assistant" && message.content && !isTyping && (
+                        <div className="mt-2 flex items-center gap-2 border-t border-white/5 pt-2 opacity-70 group-hover:opacity-100 transition">
+                          <button
+                            onClick={() => copyText(message.content, index)}
+                            className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-white transition"
+                          >
+                            {copiedIndex === index ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                            {copiedIndex === index ? "Copied" : "Copy"}
+                          </button>
+                          {isLastAssistant && (
+                            <button
+                              onClick={regenerate}
+                              disabled={busy}
+                              className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-white transition disabled:opacity-40"
+                            >
+                              <RotateCcw size={12} /> Regenerate
+                            </button>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -359,7 +468,7 @@ export default function Home() {
               value={input}
               onChange={event => setInput(event.target.value)}
               disabled={busy || isTyping}
-              placeholder="Ask about your document or use tools…"
+              placeholder="Ask questions, query document, run Python code..."
               className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm text-white outline-none placeholder:text-slate-500"
             />
             <button
