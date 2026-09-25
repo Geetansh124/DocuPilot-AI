@@ -48,7 +48,7 @@ def get_llm():
             raise RuntimeError(
                 "Missing NVIDIA_API_KEY. Set it in your environment or .env before using chat features."
             )
-        llm = ChatNVIDIA(model="nvidia/nemotron-3-ultra-550b-a55b", api_key=api_key)
+        llm = ChatNVIDIA(model="nvidia/nemotron-3-ultra-550b-a55b", api_key=api_key, timeout=120, max_tokens=1024)
     return llm
 
 
