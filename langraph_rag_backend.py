@@ -410,10 +410,21 @@ chatbot = graph.compile(checkpointer=checkpointer)
 # 8. Helpers
 # -------------------
 def retrieve_all_threads():
-    all_threads = set()
-    for checkpoint in checkpointer.list(None):
-        all_threads.add(checkpoint.config["configurable"]["thread_id"])
-    return list(all_threads)
+    """Retrieve distinct thread IDs directly from SQLite database in O(N_threads) time.
+
+    Optimized: Replaced slow O(N_checkpoints) checkpointer.list(None) iteration
+    with direct SQL SELECT DISTINCT thread_id query to eliminate checkpoint deserialization overhead.
+    """
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT DISTINCT thread_id FROM checkpoints")
+        return [row[0] for row in cursor.fetchall()]
+    except Exception:
+        # Fallback to checkpointer.list for mock or non-sqlite checkpointer backends
+        all_threads = set()
+        for checkpoint in checkpointer.list(None):
+            all_threads.add(checkpoint.config["configurable"]["thread_id"])
+        return list(all_threads)
 
 
 def thread_has_document(thread_id: str) -> bool:
