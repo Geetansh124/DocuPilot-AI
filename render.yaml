@@ -7,6 +7,12 @@ services:
     plan: free
     healthCheckPath: /health
     envVars:
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: HF_API_TOKEN
+        sync: false
+      - key: ALPHAVANTAGE_API_KEY
+        sync: false
       - key: AWS_REGION
         value: us-east-1
       - key: AWS_S3_BUCKET
@@ -14,10 +20,6 @@ services:
       - key: AWS_DYNAMODB_TABLE
         value: docupilot-documents
       - key: FRONTEND_ORIGIN
-        value: "https://frontend-5l3vkwrof-operapoint86-1507s-projects.vercel.app,https://frontend-boucxo35a-operapoint86-1507s-projects.vercel.app"
-      - key: NVIDIA_API_KEY
-        sync: false
-      - key: ALPHAVANTAGE_API_KEY
         sync: false
       - key: LANGCHAIN_TRACING_V2
         value: "false"
