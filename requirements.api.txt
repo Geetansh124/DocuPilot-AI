@@ -12,6 +12,7 @@ faiss-cpu
 pypdf
 sentence-transformers
 duckduckgo-search
+ddgs
 fastapi
 uvicorn[standard]
 python-multipart
