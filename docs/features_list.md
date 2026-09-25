@@ -1,341 +1,357 @@
-# Modern LLM Chatbot & Agentic AI Tool Inventory
-
-If you're asking for a **complete tool inventory** that can be used by a modern **LLM chatbot and an agentic AI system**, don't think of it as one giant list. Tools are best organized by capability.
-
----
-
-## 1. Core Tools for an LLM Chatbot
-
-| Category | Tools / APIs | Typical Use |
-| :--- | :--- | :--- |
-| **Web Search** | Tavily, Serper, Bing Search, Google Search | Search current information |
-| **Web Browser** | Playwright, Browserbase, Browser Use | Browse and interact with websites |
-| **URL Fetching** | HTTPX, Requests, Firecrawl | Read webpages/APIs |
-| **Calculator** | Python, SymPy | Mathematical calculations |
-| **Code Execution** | Python, Docker, E2B | Execute generated code |
-| **File Reading** | PyMuPDF, python-docx, openpyxl, pandas | Read user files |
-| **File Generation** | ReportLab, python-docx, openpyxl, python-pptx | Create artifacts |
-| **Image Understanding** | Vision models, OCR | Analyze images |
-| **Image Generation** | DALL·E/image models, Stable Diffusion | Generate images |
-| **Embeddings** | OpenAI, Cohere, Voyage, Hugging Face | Semantic search |
-| **Vector DB** | Qdrant, Pinecone, Weaviate, Chroma, FAISS | RAG |
-| **Database** | PostgreSQL, MySQL, MongoDB, Supabase | Persistent data |
-| **Memory** | Redis, Mem0, Zep | Long-term/episodic memory |
-| **Structured Output** | Pydantic, JSON Schema | Reliable tool responses |
-| **Notifications** | Email, Slack, Discord, Telegram | Communicate results |
-| **Authentication** | OAuth, Auth0, Clerk | Access control |
-
----
-
-## 2. Agentic AI Tool Categories
-
-A serious agentic system needs considerably more than search + RAG.
-
-### 🧠 Reasoning / Planning
-* Task decomposition
-* Planning
-* Replanning
-* Reflection
-* Critique
-* Self-evaluation
-* Goal management
-* State management
-* Decision trees
-* Workflow engines
-* Multi-agent coordination
-
-**Frameworks**:
-* LangGraph
-* CrewAI
-* AutoGen
-* OpenAI Agents SDK
-* Semantic Kernel
-
----
-
-### 🌐 Web / Internet
-Agents can:
-* Search Google/Bing
-* Search news
-* Browse websites
-* Click buttons
-* Fill forms
-* Download files
-* Upload files
-* Scrape pages
-* Extract structured data
-* Monitor websites
-* Compare information
-
-**Tools**:
-* Playwright
-* Browserbase
-* Browser Use
-* Firecrawl
-* Tavily
-* Serper
-* Crawl4AI
-
----
-
-### 💻 Computer-Use Tools
-This is a major difference between a chatbot and an agent.
+# Chatbot & Agentic AI — Feature / Tool Master List
+
+## 1. Core Chatbot Features
+
+- [ ] LLM conversation
+- [ ] System prompts
+- [ ] Context management
+- [ ] Conversation history
+- [ ] Streaming responses
+- [ ] Structured JSON output
+- [ ] Function/tool calling
+- [ ] Multimodal input
+- [ ] Multimodal output
+- [ ] Error handling
+- [ ] Response regeneration
+- [ ] Conversation branching
+- [ ] Session management
+
+## 2. Web & Internet
+
+- [ ] Web search
+- [ ] News search
+- [ ] Academic search
+- [ ] URL fetching
+- [ ] Web crawling
+- [ ] Web scraping
+- [ ] Browser automation
+- [ ] Website navigation
+- [ ] Click/type/form automation
+- [ ] File download
+- [ ] File upload
+- [ ] Website monitoring
+- [ ] Search result extraction
+- [ ] Source citation
+- [ ] Source verification
+- [ ] Cross-source comparison
+
+### Example Tools
+- Tavily, Serper, Bing Search, Google Search
+- Playwright, Browserbase, Browser Use, Firecrawl, Crawl4AI
+
+## 3. Agent Planning & Reasoning
+
+- [ ] Goal interpretation
+- [ ] Task decomposition
+- [ ] Multi-step planning
+- [ ] Dynamic replanning
+- [ ] Reasoning loop
+- [ ] Reflection
+- [ ] Self-critique
+- [ ] Self-evaluation
+- [ ] Decision making
+- [ ] State management
+- [ ] Task prioritization
+- [ ] Dependency management
+- [ ] Failure recovery
+- [ ] Retry strategies
+- [ ] Goal completion detection
+
+## 4. Computer Use
+
+- [ ] Desktop interaction
+- [ ] Browser interaction
+- [ ] Mouse control
+- [ ] Keyboard control
+- [ ] Screenshot capture
+- [ ] Window interaction
+- [ ] Clipboard interaction
+- [ ] File-system interaction
+- [ ] Terminal interaction
+- [ ] Remote computer interaction
+
+## 5. Coding Agent Features
+
+- [ ] Read source code
+- [ ] Search repository & symbols
+- [ ] Understand project structure
+- [ ] Create, edit, delete, and rename files
+- [ ] Run code & run tests
+- [ ] Run linters & formatters
+- [ ] Compile/build project
+- [ ] Debug errors & analyze stack traces
+- [ ] Install dependencies & manage environments
+- [ ] Git operations (commits, branches, pull requests, reviews)
+- [ ] CI/CD integration
+
+### Languages / Runtime Tools
+- Python, JavaScript, TypeScript, Bash, PowerShell, SQL, Java, C++, Go, Rust, Docker, Kubernetes
+
+## 6. File & Document Processing
+
+- [ ] PDF reading & generation
+- [ ] DOCX reading & generation
+- [ ] XLSX reading & generation
+- [ ] PPTX reading & generation
+- [ ] CSV & TXT processing
+- [ ] Markdown processing
+- [ ] OCR & table extraction
+- [ ] Document parsing, classification, summarization, and comparison
+- [ ] Metadata extraction & file conversion
+
+## 7. RAG / Knowledge Retrieval
 
-An agent workflow can execute:
-```text
-Open browser -> Open website -> Login -> Navigate -> Download file -> Process file -> Upload result -> Send notification
-```
+- [ ] Document ingestion & chunking
+- [ ] Embedding generation
+- [ ] Vector search, keyword search, and hybrid search
+- [ ] Metadata filtering & semantic retrieval
+- [ ] Reranking & context compression
+- [ ] Citation generation & source attribution
+- [ ] Knowledge-base updates & retrieval evaluation
 
-**Tools**:
-* Computer Use
-* Playwright
-* Browser Use
-* Selenium
-* PyAutoGUI
-* VNC
-* Remote desktop
-* Browser automation
+### Vector / Retrieval Technologies
+- FAISS, Qdrant, Pinecone, Weaviate, Milvus, Chroma, Elasticsearch / OpenSearch
 
----
+## 8. Memory
 
-## 3. Coding Tools
+- [ ] Short-term memory & conversation memory
+- [ ] Working memory & long-term memory
+- [ ] Semantic memory, episodic memory, and procedural memory
+- [ ] User preferences & task/decision history
+- [ ] Memory retrieval, update, summarization, expiration, and privacy controls
 
-For a **coding agent**, tools become significantly more capable.
+### Memory Technologies
+- Redis, PostgreSQL, Mem0, Zep, Vector databases
 
-### Supported Languages
-* Python, JavaScript/TypeScript, Bash, PowerShell, SQL, Java, C++, Go, Rust
+## 9. Database
 
-### Development Tools
-* Git, GitHub, GitLab, Bitbucket, Docker, Kubernetes, npm, pip, Conda, uv
+### SQL & NoSQL
+- PostgreSQL, MySQL, SQLite, SQL Server, Oracle
+- MongoDB, DynamoDB, Cassandra, Redis
 
-### Code Intelligence
-* Repository search, Symbol search, AST parsing, Linter, Formatter, Compiler, Test runner, Debugger, Static analysis
+### Agent Database Operations
+- [ ] Query data, insert, update, and delete records
+- [ ] Create tables & alter schema
+- [ ] Analyze database, generate & validate SQL, execute database migrations
 
-**Workflow**:
-```text
-User -> Agent -> Understand repository -> Search code -> Modify files -> Run tests -> Read errors -> Fix code -> Run tests again -> Git commit -> Create PR
-```
+## 10. API & Integration Layer
 
----
+- [ ] REST APIs, GraphQL, gRPC, and Webhooks
+- [ ] OAuth & API-key authentication
+- [ ] API discovery, schema parsing, and response validation
+- [ ] Rate-limit handling & retry handling
+- [ ] External service orchestration
 
-## 4. Database Tools
+## 11. Productivity Integrations
 
-An agent can interact with:
+- [ ] Gmail, Outlook, Google Calendar, Google Drive
+- [ ] Microsoft 365, Notion, Slack, Discord, Microsoft Teams
+- [ ] Jira, Linear, Trello, Asana, Airtable, Salesforce, HubSpot, ServiceNow
 
-* **SQL**: PostgreSQL, MySQL, SQLite, SQL Server, Oracle
-* **NoSQL**: MongoDB, DynamoDB, Cassandra, Redis
-* **Cloud Databases**: Supabase, Firebase, Neon, PlanetScale
+## 12. Communication
 
-**Agent Operations**:
-* `query_database()`
-* `insert_record()`
-* `update_record()`
-* `delete_record()`
-* `create_table()`
-* `analyze_data()`
+### Email & Messaging
+- [ ] Send, read, search, reply, forward, draft emails, attachment handling, classification
+- [ ] WhatsApp, Telegram, Slack, Discord, Microsoft Teams, SMS
 
-> [!CAUTION]
-> For production systems, never give an agent unrestricted SQL write access. Always enforce strict permission boundaries and parameterization.
+### Voice
+- [ ] Speech-to-text & text-to-speech
+- [ ] Voice conversations, call initiation, call transcription, voice command execution
 
----
+## 13. Image / Video / Audio
 
-## 5. RAG Tools
+### Image
+- [ ] Image understanding & OCR
+- [ ] Image generation & editing
+- [ ] Object detection, classification, segmentation, captioning, visual QA
 
-A production knowledge agent pipeline:
-```text
-Documents -> Parser -> Chunker -> Embedding -> Vector DB -> Retriever -> Reranker -> LLM
-```
+### Video & Audio
+- [ ] Video understanding, frame extraction, summarization, object tracking, scene detection
+- [ ] FFmpeg & OpenCV processing
+- [ ] Speech recognition & synthesis, speaker identification, audio transcription & summarization
 
-* **Document Loaders**: PyMuPDF, Unstructured, Docling, Apache Tika, LlamaParse
-* **Vector Databases**: Qdrant, Pinecone, Weaviate, Milvus, Chroma, FAISS
-* **Reranking Models**: Cohere Rerank, BGE Reranker, Jina Reranker
+## 14. Data Analysis
 
----
+- [ ] CSV & Excel analysis
+- [ ] SQL analysis & statistical analysis
+- [ ] Data cleaning, transformation, aggregation, and visualization
+- [ ] Report generation, anomaly detection, forecasting, and machine-learning analysis
+- **Technologies**: Python, pandas, NumPy, Polars, DuckDB, SciPy, scikit-learn, Matplotlib, Plotly, Jupyter
 
-## 6. API Tools
+## 15. AI / ML Engineering
 
-Common external tool signatures:
-* `get_weather()`, `get_stock_price()`, `get_flight()`, `get_news()`
-* `send_email()`, `create_invoice()`, `create_ticket()`, `get_customer()`, `update_order()`
+- [ ] Model selection, inference, and evaluation
+- [ ] Dataset loading & preprocessing
+- [ ] Training, fine-tuning, and embedding generation
+- [ ] Model deployment, monitoring, GPU execution, batch inference, quantization, routing
+- **Ecosystem**: OpenAI, Anthropic, Google Gemini, Mistral, Cohere, NVIDIA, Hugging Face, PyTorch, TensorFlow, vLLM, MLflow, Weights & Biases
 
-**Integrations**:
-* REST APIs, GraphQL, gRPC, Webhooks, MCP servers, OAuth APIs
+## 16. Research Agent
 
----
+- [ ] Web, academic, and news research
+- [ ] Source discovery, extraction, and deduplication
+- [ ] Evidence collection, comparison, and claim verification
+- [ ] Citation generation, research synthesis, and research report generation
+- **Sources**: Google Scholar, arXiv, PubMed, Semantic Scholar, Crossref, Government datasets, Company documentation
 
-## 7. Communication Tools
+## 17. Knowledge Graph
 
-* **Email**: Gmail, Outlook, SendGrid, Resend
-* **Messaging**: WhatsApp, Telegram, Slack, Discord, Microsoft Teams
-* **Voice**: Twilio, ElevenLabs, Deepgram, Whisper, LiveKit
+- [ ] Entity extraction & linking
+- [ ] Relationship extraction & graph construction
+- [ ] Graph querying, traversal, and graph-based retrieval
+- [ ] Knowledge updates & graph visualization
+- **Technologies**: Neo4j, Memgraph, Amazon Neptune, NetworkX
 
----
+## 18. Scheduling & Automation
 
-## 8. Productivity Tools
+- [ ] One-time and recurring tasks
+- [ ] Scheduled workflows & conditional/event/webhook triggers
+- [ ] Background jobs, retry queues, and workflow state persistence
+- **Technologies**: n8n, Zapier, Make, Temporal, Airflow, Celery, Prefect
 
-Integrations with:
-* Google Calendar, Google Drive, Gmail, Notion, Slack, Microsoft 365, Jira, Linear, Trello, Asana, Airtable
+## 19. Multi-Agent System
 
----
+- [ ] Agent supervisor & specialized agents
+- [ ] Agent delegation & agent-to-agent communication
+- [ ] Shared memory & shared tools
+- [ ] Task routing, agent handoff, verification, and conflict resolution
+- [ ] Parallel & sequential agent execution, agent result aggregation
+- **Specialized Roles**: Research, Coding, Data Analyst, Browser, Writer, Testing, Security, DevOps, Database, Project Manager
 
-## 9. Cloud / DevOps Tools
+## 20. Model Context Protocol (MCP)
 
-* **Cloud Providers**: AWS, Azure, Google Cloud, Cloudflare, Vercel
-* **Infrastructure**: Terraform, Pulumi, Kubernetes, Docker, Helm
-* **CI/CD**: GitHub Actions, GitLab CI, Jenkins, CircleCI
-* **Observability**: Grafana, Prometheus, Datadog, Sentry, OpenTelemetry
+- [ ] MCP client & MCP server
+- [ ] Tool, resource, and prompt discovery
+- [ ] Tool invocation, authentication, permissions, and server management
+- [ ] Third-party MCP integrations
 
----
+## 21. Human-in-the-Loop
 
-## 10. Computer / OS Tools
-
-* **Capabilities**: Filesystem, Terminal, Shell, Process Manager, Environment Variables, Clipboard, Screenshots, Keyboard, Mouse, Window Manager
-* **Functions**: `read_file()`, `write_file()`, `delete_file()`, `list_directory()`, `run_command()`, `start_process()`, `kill_process()`, `take_screenshot()`
-
-> [!WARNING]
-> These actions are extremely powerful and require secure sandboxing (e.g., Docker container isolation).
-
----
-
-## 11. Data Analysis Tools
-
-* **Libraries & Engines**: pandas, NumPy, Polars, DuckDB, SQL, SciPy, scikit-learn, Matplotlib, Plotly, Jupyter
-* **Workflow**: `CSV -> Agent -> Python -> pandas -> Analysis -> Visualization -> Report`
-
----
-
-## 12. AI / ML Tools
-
-* **Model APIs**: OpenAI, Anthropic, Google Gemini, Mistral, Cohere, NVIDIA, Hugging Face
-* **ML Infrastructure**: MLflow, Weights & Biases, Hugging Face, NVIDIA NIM, TensorRT, vLLM
-* **Model Operations**: `download_model()`, `train_model()`, `evaluate_model()`, `fine_tune_model()`, `deploy_model()`, `monitor_model()`
-
----
-
-## 13. Image / Video / Audio Tools
-
-* **Image**: Vision models, OCR, Image generation, Image editing, Object detection, Segmentation
-* **Video**: FFmpeg, OpenCV, YOLO, Video understanding models
-* **Audio**: Whisper, Deepgram, ElevenLabs, Azure Speech, Google Speech
-
----
-
-## 14. Search / Research Tools
-
-* **Sources**: Web search, News search, Academic search, Google Scholar, arXiv, PubMed, Semantic Scholar, Crossref, Wikipedia, Company databases, Government datasets
-* **Workflow**: `Search -> Retrieve -> Deduplicate -> Extract -> Cross-check -> Rank evidence -> Synthesize -> Cite sources`
-
----
-
-## 15. Scheduling & Automation
-
-* **Triggers**: Time, Events, Webhooks, Database changes, Email arrival, Price changes, API events, File changes
-* **Functions**: `schedule_task()`, `create_reminder()`, `run_every_hour()`, `wait_for_event()`, `watch_condition()`, `trigger_webhook()`
-* **Platforms**: n8n, Zapier, Make, Temporal, Airflow, Celery, Prefect
-
----
-
-## 16. Financial Tools
-
-* **Integrations**: Banking APIs, Stripe, PayPal, Plaid, Accounting APIs, Invoice systems, Market data APIs
-* **Functions**: `get_transactions()`, `categorize_expenses()`, `generate_invoice()`, `check_payment()`, `create_payment_link()`
-
----
-
-## 17. CRM & Business Tools
-
-* **Platforms**: Salesforce, HubSpot, Zoho, Pipedrive, SAP, Oracle, ServiceNow
-* **Workflow**: `Lead arrives -> CRM -> Agent qualifies lead -> Research company -> Update CRM -> Generate email -> Human approval -> Send email`
-
----
-
-## 18. Knowledge & Memory Systems
-
-* **Tiers**: Conversation Memory -> Working Memory -> Semantic Memory -> Episodic Memory -> Procedural Memory
-* **Storage**: Redis, PostgreSQL, Mem0, Zep, Qdrant, Neo4j
-* **Retained Data**: User preferences, Past tasks, Past decisions, Successful strategies, Failures, Important documents, Relationships
-
----
-
-## 19. Knowledge Graphs
-
-For complex relational reasoning:
-* **Technologies**: Neo4j, Memgraph, Amazon Neptune, NetworkX
-
----
-
-## 20. Multi-Agent Systems
-
-Supervisor and specialized workers architecture:
-```text
-                 Supervisor
-                     │
-       ┌─────────────┼─────────────┐
-       ↓             ↓             ↓
-   Researcher      Coder        Analyst
-       │             │             │
-   Web tools      GitHub       Python/SQL
-```
-* **Frameworks**: LangGraph, CrewAI, AutoGen, OpenAI Agents SDK, Semantic Kernel
-
----
-
-## 21. Human-in-the-Loop Tools
-
-Production safety and confirmation interfaces:
-* `request_approval()`, `pause_task()`, `resume_task()`, `escalate_to_human()`, `request_clarification()`, `review_action()`
-
----
+- [ ] Request approval & clarification
+- [ ] Pause & resume task
+- [ ] Escalate to human & review generated action
+- [ ] Approve tool execution, external communication, and destructive operations
+- [ ] Manual override
 
 ## 22. Security & Guardrails
 
-* Authentication & Authorization (OAuth, JWT)
-* Secrets Management (Vault, AWS Secrets Manager)
-* Sandboxing & Isolation (Docker, Firecracker, gVisor)
-* Input/Output Validation & Guardrails
-* Prompt Injection Detection & Tool Permission Policies (OPA)
+- [ ] Authentication, authorization, RBAC, ABAC, OAuth, JWT
+- [ ] API-key & secrets management
+- [ ] Input/output validation & prompt-injection detection
+- [ ] Tool-permission policies, sandboxing, network restrictions, rate limiting
+- [ ] Audit logging, data encryption, PII protection, data retention policies
+- **Technologies**: AWS IAM, HashiCorp Vault, OPA, Docker sandboxing, Kubernetes policies
 
----
+## 23. Cloud & DevOps
 
-## 23. Agent Observability
+- **Cloud**: AWS, Azure, Google Cloud, Cloudflare, Vercel
+- **Infrastructure**: Docker, Kubernetes, Terraform, Pulumi, Helm
+- **CI/CD**: GitHub Actions, GitLab CI, Jenkins, CircleCI
 
-Telemetry tracking:
-* Tool invocations, parameters, returned payloads, latency, token spend, error traces
-* **Tools**: LangSmith, Langfuse, Arize Phoenix, Weights & Biases, OpenTelemetry, Helicone
+## 24. Observability & Evaluation
 
----
+- [ ] Agent tracing, tool-call tracing, token/latency/cost/error tracking
+- [ ] Prompt, response, tool-use, RAG, and trajectory evaluation
+- [ ] Regression testing, production monitoring, and alerting
+- **Technologies**: LangSmith, Langfuse, Arize Phoenix, Weights & Biases, OpenTelemetry, Helicone, Sentry, Grafana, Prometheus, Datadog
 
-## 24. Model Context Protocol (MCP)
+## 25. Agent Frameworks
 
-Standardized tool, resource, and prompt exposure:
+- [ ] LangGraph, LangChain, CrewAI, AutoGen, OpenAI Agents SDK, Microsoft Semantic Kernel
+
+## 26. Agent Runtime Patterns
+
+- [ ] ReAct, plan-and-execute, reflection loop, critic/reviewer loop
+- [ ] Supervisor pattern, router pattern, sequential & parallel workflows
+- [ ] Hierarchical agents, event-driven agents, human-in-the-loop workflow, autonomous execution loop
+
+## 27. General-Purpose Agent Tool API
+
 ```text
-                LLM
-                 │
-                MCP
-                 │
-     ┌───────────┼────────────┐
-     ↓           ↓            ↓
-  GitHub       Notion       Database
+search_web()              browse_web()             fetch_url()
+scrape_web()              read_file()              write_file()
+edit_file()               delete_file()            list_files()
+run_command()             run_python()             run_sql()
+query_database()          call_api()               send_email()
+read_email()              send_message()           create_calendar_event()
+search_documents()        retrieve_context()       store_memory()
+retrieve_memory()         generate_image()         analyze_image()
+transcribe_audio()        generate_audio()         analyze_video()
+create_task()             schedule_task()          wait_for_event()
+create_github_issue()     create_pull_request()    run_tests()
+deploy_application()      request_approval()       escalate_to_human()
 ```
 
----
+## 28. Production Agent Lifecycle
 
-## 25. Core Tool Classes to Master
+```text
+USER GOAL -> UNDERSTAND -> PLAN -> SELECT TOOL / AGENT -> EXECUTE -> OBSERVE RESULT -> VALIDATE
+                                                                                           │
+                                  ┌────────────────────────────────────────────────────────┘
+                                  ▼
+                         Successful? ──Yes──> CONTINUE ──> VERIFY ──> HUMAN APPROVAL ──> ACTION ──> MEMORY ──> FINAL RESULT
+                                     └──No───> REPLAN ─────┘
+```
 
-Prioritize building with these 15 foundational tool classes:
+## 29. Recommended Build Priority
 
-1. **Web Search**
-2. **Browser Automation**
-3. **Python / Code Execution**
-4. **Filesystem**
-5. **Git / GitHub**
-6. **REST APIs**
-7. **SQL / Database**
-8. **RAG / Vector DB**
-9. **Memory Systems**
-10. **Model Context Protocol (MCP)**
-11. **Scheduling / Workflows**
-12. **Human Approval Gates**
-13. **Authentication / Security**
-14. **Observability**
-15. **Multi-Agent Orchestration**
+### Level 1 — Foundation
+- [ ] LLM API, prompting, structured output, function calling, conversation state, basic Python tool, file tools
+
+### Level 2 — Useful Agent
+- [ ] Web search, browser, RAG, vector database, SQL, memory, API integrations
+
+### Level 3 — Engineering Agent
+- [ ] Terminal, Git, GitHub, code execution, test execution, debugging, Docker
+
+### Level 4 — Production Agent
+- [ ] Authentication, authorization, sandboxing, human approval, observability, evaluation, cost controls, rate limits, audit logs
+
+### Level 5 — Advanced Agentic System
+- [ ] MCP, multi-agent orchestration, knowledge graph, long-term memory, dynamic planning, autonomous workflows, self-evaluation, agent supervision
+
+## 30. Reference Architecture
+
+```text
+                         USER
+                           │
+                           ▼
+                 ┌──────────────────┐
+                 │  Chat / Voice UI │
+                 └────────┬─────────┘
+                          │
+                          ▼
+                 ┌──────────────────┐
+                 │   Agent Runtime  │
+                 │ Planner/Reasoner │
+                 │ State/Policy     │
+                 └────────┬─────────┘
+                          │
+          ┌───────────────┼────────────────┐
+          ▼               ▼                ▼
+       MEMORY           TOOLS            AGENTS
+     ┌────┴────┐    ┌─────┼─────┐    ┌────┼─────┐
+     │Vector DB│    │ Web │Code  │    │Research│Coding│
+     │SQL/Graph│    │ DB  │ APIs  │    │Data    │DevOps│
+     └─────────┘    └─────┴──────┘    └─────────┘
+                          │
+                          ▼
+                 ┌──────────────────┐
+                 │ Verification     │
+                 │ Security/Tracing │
+                 └────────┬─────────┘
+                          │
+                          ▼
+                 ┌──────────────────┐
+                 │  Human Approval  │
+                 └────────┬─────────┘
+                          │
+                          ▼
+                  ACTION ───> MEMORY
+```
+
+## 31. Master Goal
+
+```text
+UNDERSTAND -> PLAN -> RESEARCH -> RETRIEVE -> USE TOOLS -> WRITE CODE -> EXECUTE -> TEST -> VERIFY -> ASK HUMAN -> ACTION -> REMEMBER -> REPORT RESULT
+```
