@@ -3,7 +3,7 @@ from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
 
 from api_server import app
-from langraph_rag_backend import _route_with_ruflo, calculator, get_stock_price
+from langraph_rag_backend import _route_with_ruflo, calculator, get_stock_price, retrieve_all_threads, conn
 
 
 class TestBackend(unittest.TestCase):
@@ -33,6 +33,29 @@ class TestBackend(unittest.TestCase):
 
         div_zero = calculator.invoke({"first_num": 10, "second_num": 0, "operation": "div"})
         self.assertEqual(div_zero, {"error": "Division by zero is not allowed"})
+
+    def test_retrieve_all_threads_performance_and_correctness(self):
+        cursor = conn.cursor()
+        cursor.execute(
+            """CREATE TABLE IF NOT EXISTS checkpoints (
+            thread_id TEXT,
+            checkpoint_ns TEXT,
+            checkpoint_id TEXT,
+            parent_checkpoint_id TEXT,
+            type TEXT,
+            checkpoint BLOB,
+            metadata BLOB
+        )"""
+        )
+        cursor.execute("INSERT INTO checkpoints (thread_id) VALUES (?)", ("perf_test_1",))
+        cursor.execute("INSERT INTO checkpoints (thread_id) VALUES (?)", ("perf_test_1",))
+        cursor.execute("INSERT INTO checkpoints (thread_id) VALUES (?)", ("perf_test_2",))
+        conn.commit()
+
+        threads = retrieve_all_threads()
+        self.assertIn("perf_test_1", threads)
+        self.assertIn("perf_test_2", threads)
+        self.assertEqual(len(threads), len(set(threads)))
 
 
 if __name__ == "__main__":
